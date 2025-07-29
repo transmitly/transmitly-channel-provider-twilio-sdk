@@ -19,6 +19,7 @@ using System.Net.Http;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Transmitly.Channel.Configuration;
+using Transmitly.Channel.Configuration.Voice;
 using Transmitly.ChannelProvider.Twilio.Configuration;
 using Transmitly.ChannelProvider.Twilio.Configuration.Voice;
 using Transmitly.Util;
@@ -38,7 +39,7 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 
 		}
 
-		private ExtendedVoiceChannelProperties(IChannel<IVoice> voiceChannel)
+		private ExtendedVoiceChannelProperties(IVoiceChannelConfiguration voiceChannel)
 		{
 			Guard.AgainstNull(voiceChannel);
 			_extendedProperties = Guard.AgainstNull(voiceChannel.ExtendedProperties);
@@ -206,9 +207,9 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 			throw new NotImplementedException();
 		}
 
-		public IExtendedVoiceChannelProperties Adapt(IChannel<IVoice> sms)
+		public IExtendedVoiceChannelProperties Adapt(IVoiceChannelConfiguration voice)
 		{
-			return new ExtendedVoiceChannelProperties(sms);
+			return new ExtendedVoiceChannelProperties(voice);
 		}
 	}
 
