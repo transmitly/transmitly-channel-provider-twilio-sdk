@@ -1,6 +1,6 @@
 # Transmitly.ChannelProvider.Twilio.Sdk
 
-A Transmitly channel provdier using Twilio's Sdk
+A Transmitly™ channel provdier using Twilio's Sdk
 
 ### Getting started
 
