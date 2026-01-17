@@ -47,7 +47,7 @@
 		<PackageReference Include="Twilio" Version="6.18.0" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
 		<PackageReference Include="PolySharp" Version="1.15.0" PrivateAssets="All" />
-		<PackageReference Include="Transmitly" Version="0.2.1" />
+		<PackageReference Include="Transmitly" Version="0.2.2-39.19f2783" />
 		<PackageReference Include="Transmitly.ChannelProvider.Twilio.Configuration" Version="0.2.3" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
