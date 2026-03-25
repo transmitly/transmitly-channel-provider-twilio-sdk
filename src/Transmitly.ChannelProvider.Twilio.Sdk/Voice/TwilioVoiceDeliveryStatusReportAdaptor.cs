@@ -1,4 +1,4 @@
-﻿// ﻿﻿Copyright (c) Code Impressions, LLC. All Rights Reserved.
+﻿// Copyright (c) Code Impressions, LLC. All Rights Reserved.
 //  
 //  Licensed under the Apache License, Version 2.0 (the "License")
 //  you may not use this file except in compliance with the License.
@@ -22,10 +22,18 @@ using Transmitly.Delivery;
 
 namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 {
+	/// <summary>
+	/// Adapts incoming Twilio voice status callbacks into Transmitly delivery reports.
+	/// </summary>
 	public sealed class TwilioVoiceDeliveryStatusReportAdaptor : IChannelProviderDeliveryReportRequestAdaptor
 	{
 		//todo: request validation
 		//https://www.twilio.com/docs/usage/webhooks/webhooks-security
+		/// <summary>
+		/// Converts a Twilio webhook callback into one or more delivery reports.
+		/// </summary>
+		/// <param name="adaptorContext">Incoming request adaptor context.</param>
+		/// <returns>The adapted delivery reports, or <see langword="null"/> when the request does not match this adaptor.</returns>
 		public Task<IReadOnlyCollection<DeliveryReport>?> AdaptAsync(IRequestAdaptorContext adaptorContext)
 		{
 			if (!ShouldAdapt(adaptorContext))

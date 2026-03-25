@@ -1,4 +1,4 @@
-﻿// ﻿﻿Copyright (c) Code Impressions, LLC. All Rights Reserved.
+﻿// Copyright (c) Code Impressions, LLC. All Rights Reserved.
 //  
 //  Licensed under the Apache License, Version 2.0 (the "License")
 //  you may not use this file except in compliance with the License.
@@ -28,6 +28,10 @@ using Transmitly.ChannelProvider.Twilio.Configuration;
 
 namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 {
+	/// <summary>
+	/// Dispatches voice calls through Twilio.
+	/// </summary>
+	/// <param name="twilioClientOptions">Twilio client configuration.</param>
 	public sealed class TwilioVoiceChannelProviderDispatcher(TwilioClientOptions twilioClientOptions) : ChannelProviderRestDispatcher<IVoice>(null)
 	{
 		private readonly TwilioClientOptions _twilioClientOptions = twilioClientOptions;
@@ -122,7 +126,11 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 
 		private static string? ConvertMachineDetection(MachineDetection channelValue, MachineDetection? configuredValue)
 		{
+#if NET6_0_OR_GREATER
+			return Enum.GetName(configuredValue ?? channelValue);
+#else
 			return Enum.GetName(typeof(MachineDetection), configuredValue ?? channelValue);
+			#endif
 		}
 
 		private static async Task<Uri?> GetTwiMLCallbackUrl(string messageNeededId, ExtendedVoiceChannelProperties voiceProperties, IDispatchCommunicationContext context)
@@ -159,6 +167,10 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 			return new Uri(url).AddPipelineContext(string.Empty, context.PipelineIntent, context.PipelineId, context.ChannelId, context.ChannelProviderId);
 		}
 
+		/// <summary>
+		/// Configures the HTTP client used to communicate with Twilio.
+		/// </summary>
+		/// <param name="httpClient">HTTP client to configure.</param>
 		protected override void ConfigureHttpClient(System.Net.Http.HttpClient httpClient)
 		{
 			RestClientConfiguration.Configure(httpClient, _twilioClientOptions);

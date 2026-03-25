@@ -1,4 +1,4 @@
-﻿// ﻿﻿Copyright (c) Code Impressions, LLC. All Rights Reserved.
+﻿// Copyright (c) Code Impressions, LLC. All Rights Reserved.
 //  
 //  Licensed under the Apache License, Version 2.0 (the "License")
 //  you may not use this file except in compliance with the License.
@@ -17,15 +17,35 @@ using Transmitly.Delivery;
 
 namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 {
+	/// <summary>
+	/// Represents a Twilio voice delivery report enriched with Twilio-specific properties.
+	/// </summary>
 	public sealed record VoiceDeliveryReport : DeliveryReport, IVoiceDeliveryReport
 	{
 		private readonly ExtendedVoiceDeliveryReportProperties _extended;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="VoiceDeliveryReport"/> class from an existing delivery report.
+		/// </summary>
+		/// <param name="original">Delivery report to wrap.</param>
 		public VoiceDeliveryReport(DeliveryReport original) : base(original)
 		{
 			_extended = new ExtendedVoiceDeliveryReportProperties(this);
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="VoiceDeliveryReport"/> class.
+		/// </summary>
+		/// <param name="EventName">Delivery event name.</param>
+		/// <param name="ChannelId">Channel identifier.</param>
+		/// <param name="ChannelProviderId">Channel provider identifier.</param>
+		/// <param name="PipelineName">Pipeline intent or name.</param>
+		/// <param name="PipelineId">Pipeline identifier.</param>
+		/// <param name="ResourceId">Provider resource identifier.</param>
+		/// <param name="Status">Delivery status.</param>
+		/// <param name="ChannelCommunication">Channel communication payload.</param>
+		/// <param name="ContentModel">Associated content model.</param>
+		/// <param name="Exception">Associated exception, if any.</param>
 		public VoiceDeliveryReport(string EventName, string? ChannelId, string? ChannelProviderId, string? PipelineName, string? PipelineId,
 				string? ResourceId, CommunicationsStatus Status, object? ChannelCommunication, IContentModel? ContentModel, Exception? Exception)
 			: base(EventName, ChannelId, ChannelProviderId, PipelineName, PipelineId, ResourceId, Status, ChannelCommunication, ContentModel, Exception)
@@ -33,10 +53,19 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 			_extended = new ExtendedVoiceDeliveryReportProperties(this);
 		}
 
+		/// <summary>
+		/// Gets the destination phone number.
+		/// </summary>
 		public string? To => _extended.To;
 
+		/// <summary>
+		/// Gets the originating phone number.
+		/// </summary>
 		public string? From => _extended.From;
 
+		/// <summary>
+		/// Gets the call duration when available.
+		/// </summary>
 		public TimeSpan? Duration => _extended.CallDuration ?? _extended.Duration;
 	}
 }

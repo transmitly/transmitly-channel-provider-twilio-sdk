@@ -1,4 +1,4 @@
-﻿// ﻿﻿Copyright (c) Code Impressions, LLC. All Rights Reserved.
+﻿// Copyright (c) Code Impressions, LLC. All Rights Reserved.
 //  
 //  Licensed under the Apache License, Version 2.0 (the "License")
 //  you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
-using Transmitly.Channel.Configuration;
 using Transmitly.Channel.Configuration.Voice;
 using Transmitly.ChannelProvider.Twilio.Configuration;
 using Transmitly.ChannelProvider.Twilio.Configuration.Voice;
@@ -34,6 +33,9 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 		private readonly IExtendedProperties _extendedProperties;
 		private const string ProviderKey = TwilioConstant.VoicePropertiesKey;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ExtendedVoiceChannelProperties"/> class.
+		/// </summary>
 		public ExtendedVoiceChannelProperties()
 		{
 
@@ -137,7 +139,7 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 
 		AttributeCollection ICustomTypeDescriptor.GetAttributes()
 		{
-			return [];
+			return new AttributeCollection();
 		}
 
 		string? ICustomTypeDescriptor.GetClassName()
@@ -207,6 +209,11 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 			throw new NotImplementedException();
 		}
 
+		/// <summary>
+		/// Adapts a configured voice channel into Twilio-specific channel properties.
+		/// </summary>
+		/// <param name="voice">Voice channel configuration to adapt.</param>
+		/// <returns>A Twilio voice channel properties wrapper.</returns>
 		public IExtendedVoiceChannelProperties Adapt(IVoiceChannelConfiguration voice)
 		{
 			return new ExtendedVoiceChannelProperties(voice);
@@ -220,42 +227,75 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 	/// <param name="attrs">Attributes on property.</param>
 	public class ExtendedVoiceChannelPropertiesPropertyDescriptor(string name, Attribute[] attrs) : PropertyDescriptor(name, attrs)
 	{
+		/// <summary>
+		/// Gets the component type described by this descriptor.
+		/// </summary>
 		public override Type ComponentType
 		{
 			get { return typeof(ExtendedVoiceChannelProperties); }
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether the property is read-only.
+		/// </summary>
 		public override bool IsReadOnly
 		{
 			get { return false; }
 		}
 
+		/// <summary>
+		/// Gets the property type described by this descriptor.
+		/// </summary>
 		public override Type PropertyType
 		{
 			get { return typeof(string); }
 		}
 
+		/// <summary>
+		/// Determines whether the property value can be reset.
+		/// </summary>
+		/// <param name="component">Component being inspected.</param>
+		/// <returns><see langword="true"/> when the property can be reset; otherwise, <see langword="false"/>.</returns>
 		public override bool CanResetValue(object component)
 		{
-			return GetValue(component).Equals("");
+			return GetValue(component)?.Equals("") ?? false;
 		}
 
+		/// <summary>
+		/// Resets the property value for the provided component.
+		/// </summary>
+		/// <param name="component">Component whose value should be reset.</param>
 		public override void ResetValue(object component)
 		{
 			SetValue(component, "");
 		}
 
+		/// <summary>
+		/// Determines whether the property value should be serialized.
+		/// </summary>
+		/// <param name="component">Component being inspected.</param>
+		/// <returns><see langword="false"/>.</returns>
 		public override bool ShouldSerializeValue(object component)
 		{
 			return false;
 		}
 
-		public override object GetValue(object component)
+		/// <summary>
+		/// Gets the current property value from the provided component.
+		/// </summary>
+		/// <param name="component">Component being inspected.</param>
+		/// <returns>The current property value.</returns>
+		public override object? GetValue(object? component)
 		{
 			return component;
 		}
 
-		public override void SetValue(object component, object value)
+		/// <summary>
+		/// Sets the property value on the provided component.
+		/// </summary>
+		/// <param name="component">Component whose value should be updated.</param>
+		/// <param name="value">Value to apply.</param>
+		public override void SetValue(object? component, object? value)
 		{
 
 		}

@@ -1,4 +1,4 @@
-﻿// ﻿﻿Copyright (c) Code Impressions, LLC. All Rights Reserved.
+﻿// Copyright (c) Code Impressions, LLC. All Rights Reserved.
 //  
 //  Licensed under the Apache License, Version 2.0 (the "License")
 //  you may not use this file except in compliance with the License.
@@ -25,6 +25,9 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk
 	/// </summary>
 	public sealed class DeliveryReportExtendedProperties : IDeliveryReportExtendedProperties
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="DeliveryReportExtendedProperties"/> class.
+		/// </summary>
 		public DeliveryReportExtendedProperties()
 		{
 
@@ -44,6 +47,11 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk
 		/// </summary>
 		public IExtendedVoiceDeliveryReportProperties Voice { get; }
 
+		/// <summary>
+		/// Creates a delivery report extension view for the provided report.
+		/// </summary>
+		/// <param name="report">Delivery report to adapt.</param>
+		/// <returns>A channel-specific extended properties wrapper.</returns>
 		public IDeliveryReportExtendedProperties Adapt(DeliveryReport report)
 		{
 			return new DeliveryReportExtendedProperties(report);

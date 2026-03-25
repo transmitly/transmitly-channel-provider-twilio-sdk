@@ -1,4 +1,4 @@
-﻿// ﻿﻿Copyright (c) Code Impressions, LLC. All Rights Reserved.
+﻿// Copyright (c) Code Impressions, LLC. All Rights Reserved.
 //  
 //  Licensed under the Apache License, Version 2.0 (the "License")
 //  you may not use this file except in compliance with the License.
@@ -25,10 +25,22 @@ using Twilio.Rest.Api.V2010.Account;
 
 namespace Transmitly.ChannelProvider.Twilio.Sdk.Sms
 {
+	/// <summary>
+	/// Dispatches SMS messages through Twilio.
+	/// </summary>
+	/// <param name="twilioClientOptions">Twilio client configuration.</param>
 	public sealed class TwilioSmsChannelProviderDispatcher(TwilioClientOptions twilioClientOptions) : ChannelProviderRestDispatcher<ISms>(null)
 	{
 		private readonly TwilioClientOptions _twilioClientOptions = Guard.AgainstNull(twilioClientOptions);
 
+		/// <summary>
+		/// Dispatches an SMS communication using Twilio.
+		/// </summary>
+		/// <param name="restClient">HTTP client used for dispatch.</param>
+		/// <param name="sms">SMS communication to dispatch.</param>
+		/// <param name="communicationContext">Dispatch context.</param>
+		/// <param name="cancellationToken">Cancellation token.</param>
+		/// <returns>The dispatch results for each recipient.</returns>
 		protected override async Task<IReadOnlyCollection<IDispatchResult?>> DispatchAsync(HttpClient restClient, ISms sms, IDispatchCommunicationContext communicationContext, CancellationToken cancellationToken)
 		{
 			Guard.AgainstNull(sms);
@@ -83,6 +95,10 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Sms
 			return new Uri(url).AddPipelineContext(string.Empty, context.PipelineIntent, context.PipelineId, context.ChannelId, context.ChannelProviderId);
 		}
 
+		/// <summary>
+		/// Configures the HTTP client used to communicate with Twilio.
+		/// </summary>
+		/// <param name="httpClient">HTTP client to configure.</param>
 		protected override void ConfigureHttpClient(HttpClient httpClient)
 		{
 			RestClientConfiguration.Configure(httpClient, _twilioClientOptions);

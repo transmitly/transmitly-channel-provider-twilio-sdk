@@ -1,4 +1,4 @@
-﻿// ﻿﻿Copyright (c) Code Impressions, LLC. All Rights Reserved.
+﻿// Copyright (c) Code Impressions, LLC. All Rights Reserved.
 //  
 //  Licensed under the Apache License, Version 2.0 (the "License")
 //  you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@ using System;
 
 namespace Transmitly.ChannelProvider.Twilio.Sdk
 {
+	/// <summary>
+	/// Represents an error that occurs while preparing or dispatching a Twilio request.
+	/// </summary>
 	public sealed class TwilioClientException : Exception
 	{
 		internal TwilioClientException(string message) : base(message)

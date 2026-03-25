@@ -1,4 +1,4 @@
-﻿// ﻿﻿Copyright (c) Code Impressions, LLC. All Rights Reserved.
+﻿// Copyright (c) Code Impressions, LLC. All Rights Reserved.
 //  
 //  Licensed under the Apache License, Version 2.0 (the "License")
 //  you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
 
 using System;
 using System.Threading.Tasks;
-using Transmitly.Channel.Configuration;
 using Transmitly.Channel.Configuration.Sms;
 using Transmitly.ChannelProvider.Twilio.Configuration;
 using Transmitly.ChannelProvider.Twilio.Configuration.Sms;
@@ -30,6 +29,9 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Sms
 		private readonly IExtendedProperties _extendedProperties;
 		private const string ProviderKey = TwilioConstant.SmsPropertiesKey;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ExtendedSmsChannelProperties"/> class.
+		/// </summary>
 		public ExtendedSmsChannelProperties()
 		{
 
@@ -82,6 +84,11 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Sms
 			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(MessagingServiceSid), value);
 		}
 
+		/// <summary>
+		/// Adapts a configured SMS channel into Twilio-specific channel properties.
+		/// </summary>
+		/// <param name="sms">SMS channel configuration to adapt.</param>
+		/// <returns>A Twilio SMS channel properties wrapper.</returns>
 		public IExtendedSmsChannelProperties Adapt(ISmsChannelConfiguration sms)
 		{
 			return new ExtendedSmsChannelProperties(sms);
