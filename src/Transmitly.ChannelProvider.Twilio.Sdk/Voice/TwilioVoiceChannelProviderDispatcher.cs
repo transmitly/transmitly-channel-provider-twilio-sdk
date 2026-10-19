@@ -32,7 +32,7 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 	/// Dispatches voice calls through Twilio.
 	/// </summary>
 	/// <param name="twilioClientOptions">Twilio client configuration.</param>
-	public sealed class TwilioVoiceChannelProviderDispatcher(TwilioClientOptions twilioClientOptions) : ChannelProviderRestDispatcher<IVoice>(null)
+	public sealed class TwilioVoiceChannelProviderDispatcher(TwilioClientOptions twilioClientOptions) : ChannelProviderRestDispatcher<IVoice>(RestClientConfiguration.CreateHttpClient(twilioClientOptions))
 	{
 		private readonly TwilioClientOptions _twilioClientOptions = twilioClientOptions;
 

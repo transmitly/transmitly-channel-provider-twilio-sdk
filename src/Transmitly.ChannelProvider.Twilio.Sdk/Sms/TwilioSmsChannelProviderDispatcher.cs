@@ -29,7 +29,7 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Sms
 	/// Dispatches SMS messages through Twilio.
 	/// </summary>
 	/// <param name="twilioClientOptions">Twilio client configuration.</param>
-	public sealed class TwilioSmsChannelProviderDispatcher(TwilioClientOptions twilioClientOptions) : ChannelProviderRestDispatcher<ISms>(null)
+	public sealed class TwilioSmsChannelProviderDispatcher(TwilioClientOptions twilioClientOptions) : ChannelProviderRestDispatcher<ISms>(RestClientConfiguration.CreateHttpClient(twilioClientOptions))
 	{
 		private readonly TwilioClientOptions _twilioClientOptions = Guard.AgainstNull(twilioClientOptions);
 

@@ -12,6 +12,8 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
+using System.Collections.Concurrent;
+using System.Net;
 using System.Net.Http;
 using Transmitly.ChannelProvider.Twilio.Configuration;
 using Transmitly.Util;
@@ -20,18 +22,30 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk
 {
 	internal static class RestClientConfiguration
 	{
+		// Dispatchers can be created per dispatch; one handler (connection pool) per proxy keeps sockets from leaking.
+		private static readonly ConcurrentDictionary<IWebProxy, HttpMessageHandler> _proxyHandlers = new();
+
+		/// <summary>
+		/// A proxy can only be set on the handler, so a proxied client must be created before it is handed to the dispatcher.
+		/// Returns null when no proxy is configured so the dispatcher uses its default client.
+		/// </summary>
+		public static HttpClient? CreateHttpClient(TwilioClientOptions? channelProviderConfiguration)
+		{
+			if (channelProviderConfiguration?.WebProxy == null)
+				return null;
+
+			var handler = _proxyHandlers.GetOrAdd(channelProviderConfiguration.WebProxy, proxy => new HttpClientHandler
+			{
+				Proxy = proxy,
+				UseCookies = false
+			});
+			return new HttpClient(handler, disposeHandler: false);
+		}
+
 		public static void Configure(HttpClient httpClient, TwilioClientOptions channelProviderConfiguration)
 		{
 			Guard.AgainstNull(httpClient);
 			Guard.AgainstNull(channelProviderConfiguration);
-
-			if (channelProviderConfiguration.WebProxy != null)
-			{
-				httpClient = new(new HttpClientHandler
-				{
-					Proxy = channelProviderConfiguration.WebProxy
-				});
-			}
 
 			httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(channelProviderConfiguration.UserAgent);
 		}
