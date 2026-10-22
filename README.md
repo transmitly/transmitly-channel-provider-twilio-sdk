@@ -40,7 +40,7 @@ builder.ChannelProvider
 	.AddDispatcher<TwilioVoiceChannelProviderDispatcher, IVoice>(Id.Channel.Voice())
 	.AddDeliveryReportRequestAdaptor<TwilioSmsDeliveryStatusReportAdaptor>()
 	.AddDeliveryReportRequestAdaptor<TwilioVoiceDeliveryStatusReportAdaptor>()
-	.AddDeliveryReportExtendedProprtiesAdaptor<DeliveryReportExtendedProperties>()
+	.AddDeliveryReportExtendedPropertiesAdaptor<DeliveryReportExtendedProperties>()
 	.AddSmsExtendedPropertiesAdaptor<ExtendedSmsChannelProperties>()
 	.AddVoiceExtendedPropertiesAdaptor<ExtendedVoiceChannelProperties>()
 	.Register();
