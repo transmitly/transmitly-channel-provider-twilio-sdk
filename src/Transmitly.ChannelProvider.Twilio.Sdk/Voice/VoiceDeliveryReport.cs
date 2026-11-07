@@ -13,6 +13,7 @@
 //  limitations under the License.
 
 using System;
+using Transmitly.ChannelProvider.Twilio.Configuration.Voice;
 using Transmitly.Delivery;
 
 namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
@@ -22,7 +23,7 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 	/// </summary>
 	public sealed record VoiceDeliveryReport : DeliveryReport, IVoiceDeliveryReport
 	{
-		private readonly ExtendedVoiceDeliveryReportProperties _extended;
+		private readonly IExtendedVoiceDeliveryReportProperties _extended;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="VoiceDeliveryReport"/> class from an existing delivery report.
@@ -30,7 +31,7 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 		/// <param name="original">Delivery report to wrap.</param>
 		public VoiceDeliveryReport(DeliveryReport original) : base(original)
 		{
-			_extended = new ExtendedVoiceDeliveryReportProperties(this);
+			_extended = this.Twilio().Voice;
 		}
 
 		/// <summary>
@@ -50,7 +51,7 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 				string? ResourceId, CommunicationsStatus Status, object? ChannelCommunication, IContentModel? ContentModel, Exception? Exception)
 			: base(EventName, ChannelId, ChannelProviderId, PipelineName, PipelineId, ResourceId, Status, ChannelCommunication, ContentModel, Exception)
 		{
-			_extended = new ExtendedVoiceDeliveryReportProperties(this);
+			_extended = this.Twilio().Voice;
 		}
 
 		/// <summary>

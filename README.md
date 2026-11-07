@@ -12,10 +12,8 @@ That package registers this SDK implementation for you.
 
 ## What This Package Provides
 
-- `TwilioSmsChannelProviderDispatcher` for the `Sms` channel.
-- `TwilioVoiceChannelProviderDispatcher` for the `Voice` channel.
-- SMS and voice delivery-report request adaptors for Twilio webhooks.
-- Concrete SMS, voice, and delivery-report extended property adaptors.
+- Twilio-specific settings (`sms.Twilio()`, `voice.Twilio()`) and delivery-report values (`report.Twilio()`)
+
 
 ## Using This Package Directly (Advanced)
 
@@ -40,9 +38,6 @@ builder.ChannelProvider
 	.AddDispatcher<TwilioVoiceChannelProviderDispatcher, IVoice>(Id.Channel.Voice())
 	.AddDeliveryReportRequestAdaptor<TwilioSmsDeliveryStatusReportAdaptor>()
 	.AddDeliveryReportRequestAdaptor<TwilioVoiceDeliveryStatusReportAdaptor>()
-	.AddDeliveryReportExtendedPropertiesAdaptor<DeliveryReportExtendedProperties>()
-	.AddSmsExtendedPropertiesAdaptor<ExtendedSmsChannelProperties>()
-	.AddVoiceExtendedPropertiesAdaptor<ExtendedVoiceChannelProperties>()
 	.Register();
 ```
 

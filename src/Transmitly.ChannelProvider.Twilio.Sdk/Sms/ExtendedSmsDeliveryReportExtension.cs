@@ -20,21 +20,19 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Sms
 	{
 		public static SmsDeliveryReport ApplyExtendedProperties(this SmsDeliveryReport voiceDeliveryReport, SmsStatusReport report)
 		{
-			_ = new ExtendedSmsDeliveryReportProperties(voiceDeliveryReport)
-			{
-				To = report.To,
-				From = report.From,
-				AccountSid = report.AccountSid,
-				ApiVersion = report.ApiVersion,
-				HomeRegion = report.HomeRegion,
-				IdempotencyId = report.IdempotencyId,
-				MessageSid = report.MessageSid,
-				MessageStatus = report.MessageStatus,
-				Signature = report.Signature,
-				SmsSid = report.SmsSid,
-				SmsStatus = report.SmsStatus,
-				ErrorCode = report.ErrorCode
-			};
+			var sms = voiceDeliveryReport.Twilio().Sms;
+			sms.To = report.To;
+			sms.From = report.From;
+			sms.AccountSid = report.AccountSid;
+			sms.ApiVersion = report.ApiVersion;
+			sms.HomeRegion = report.HomeRegion;
+			sms.IdempotencyId = report.IdempotencyId;
+			sms.MessageSid = report.MessageSid;
+			sms.MessageStatus = report.MessageStatus;
+			sms.Signature = report.Signature;
+			sms.SmsSid = report.SmsSid;
+			sms.SmsStatus = report.SmsStatus;
+			sms.ErrorCode = report.ErrorCode;
 
 			return voiceDeliveryReport;
 		}

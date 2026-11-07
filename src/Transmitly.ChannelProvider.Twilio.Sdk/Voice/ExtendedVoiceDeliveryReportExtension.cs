@@ -20,43 +20,41 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 	{
 		public static VoiceDeliveryReport ApplyExtendedProperties(this VoiceDeliveryReport voiceDeliveryReport, VoiceStatusReport report)
 		{
-			_ = new ExtendedVoiceDeliveryReportProperties(voiceDeliveryReport)
-			{
-				To = report.To,
-				From = report.From,
-				AccountSid = report.AccountSid,
-				ApiVersion = report.ApiVersion,
-				CallSid = report.CallSid,
-				Duration = report.Duration,
-				Timestamp = report.Timestamp,
-				AnsweredBy = report.AnsweredBy,
-				CallbackSource = report.CallbackSource,
-				IdempotencyId = report.IdempotencyId,
-				FromState = report.FromState,
-				FromZip = report.FromZip,
-				CalledState = report.CalledState,
-				CallDuration = report.CallDuration,
-				Called = report.Called,
-				CalledCity = report.CalledCity,
-				CalledCountry = report.CalledCountry,
-				CalledZip = report.CalledZip,
-				Caller = report.Caller,
-				CallerCity = report.CallerCity,
-				CallerCountry = report.CallerCountry,
-				CallerState = report.CallerState,
-				CallerZip = report.CallerZip,
-				CallStatus = report.CallStatus,
-				Direction = report.Direction,
-				FromCity = report.FromCity,
-				FromCountry = report.FromCountry,
-				SequenceNumber = report.SequenceNumber,
-				Signature = report.Signature,
-				SipResponseCode = report.SipResponseCode,
-				ToCity = report.ToCity,
-				ToCountry = report.ToCountry,
-				ToState = report.ToState,
-				ToZip = report.ToZip
-			};
+			var voice = voiceDeliveryReport.Twilio().Voice;
+			voice.To = report.To;
+			voice.From = report.From;
+			voice.AccountSid = report.AccountSid;
+			voice.ApiVersion = report.ApiVersion;
+			voice.CallSid = report.CallSid;
+			voice.Duration = report.Duration;
+			voice.Timestamp = report.Timestamp;
+			voice.AnsweredBy = report.AnsweredBy;
+			voice.CallbackSource = report.CallbackSource;
+			voice.IdempotencyId = report.IdempotencyId;
+			voice.FromState = report.FromState;
+			voice.FromZip = report.FromZip;
+			voice.CalledState = report.CalledState;
+			voice.CallDuration = report.CallDuration;
+			voice.Called = report.Called;
+			voice.CalledCity = report.CalledCity;
+			voice.CalledCountry = report.CalledCountry;
+			voice.CalledZip = report.CalledZip;
+			voice.Caller = report.Caller;
+			voice.CallerCity = report.CallerCity;
+			voice.CallerCountry = report.CallerCountry;
+			voice.CallerState = report.CallerState;
+			voice.CallerZip = report.CallerZip;
+			voice.CallStatus = report.CallStatus;
+			voice.Direction = report.Direction;
+			voice.FromCity = report.FromCity;
+			voice.FromCountry = report.FromCountry;
+			voice.SequenceNumber = report.SequenceNumber;
+			voice.Signature = report.Signature;
+			voice.SipResponseCode = report.SipResponseCode;
+			voice.ToCity = report.ToCity;
+			voice.ToCountry = report.ToCountry;
+			voice.ToState = report.ToState;
+			voice.ToZip = report.ToZip;
 			return voiceDeliveryReport;
 		}
 	}

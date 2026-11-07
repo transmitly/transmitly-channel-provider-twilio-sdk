@@ -19,6 +19,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Transmitly.ChannelProvider.Twilio.Configuration;
+using Transmitly.ChannelProvider.Twilio.Configuration.Sms;
 using Transmitly.Delivery;
 using Transmitly.Util;
 using Twilio.Rest.Api.V2010.Account;
@@ -47,7 +48,7 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Sms
 			Guard.AgainstNull(communicationContext);
 
 			var recipients = communicationContext.PlatformIdentities.SelectMany(a => a.Addresses.Select(addr => addr.Value)).ToList();
-			var smsProperties = new ExtendedSmsChannelProperties(sms.ExtendedProperties);
+			var smsProperties = sms.Twilio();
 			var results = new List<IDispatchResult>(recipients.Count);
 
 			foreach (var recipient in recipients)
@@ -76,18 +77,10 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Sms
 			return results;
 		}
 
-		private static async Task<Uri?> GetStatusCallbackUrl(ExtendedSmsChannelProperties smsProperties, ISms sms, IDispatchCommunicationContext context)
+		private static async Task<Uri?> GetStatusCallbackUrl(IExtendedSmsChannelProperties smsProperties, ISms sms, IDispatchCommunicationContext context)
 		{
-			string? url = smsProperties.StatusCallbackUrl;
-
 			var resolveUrl = smsProperties.StatusCallbackUrlResolver ?? sms.DeliveryReportCallbackUrlResolver;
-			if (resolveUrl != null)
-			{
-				var urlResult = await resolveUrl(context).ConfigureAwait(false);
-				if (string.IsNullOrWhiteSpace(urlResult))
-					return null;
-				return new Uri(urlResult);
-			}
+			var url = resolveUrl != null ? await resolveUrl(context).ConfigureAwait(false) : smsProperties.StatusCallbackUrl;
 
 			if (string.IsNullOrWhiteSpace(url))
 				return null;

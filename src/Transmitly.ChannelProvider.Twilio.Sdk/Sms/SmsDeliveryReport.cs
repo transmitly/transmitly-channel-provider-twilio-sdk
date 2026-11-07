@@ -13,6 +13,7 @@
 //  limitations under the License.
 
 using System;
+using Transmitly.ChannelProvider.Twilio.Configuration.Sms;
 using Transmitly.Delivery;
 
 namespace Transmitly.ChannelProvider.Twilio.Sdk.Sms
@@ -22,7 +23,7 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Sms
 	/// </summary>
 	public sealed record SmsDeliveryReport : DeliveryReport, ISmsDeliveryReport
 	{
-		private readonly ExtendedSmsDeliveryReportProperties _extended;
+		private readonly IExtendedSmsDeliveryReportProperties _extended;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SmsDeliveryReport"/> class from an existing delivery report.
@@ -30,7 +31,7 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Sms
 		/// <param name="original">Delivery report to wrap.</param>
 		public SmsDeliveryReport(DeliveryReport original) : base(original)
 		{
-			_extended = new ExtendedSmsDeliveryReportProperties(this);
+			_extended = this.Twilio().Sms;
 		}
 
 		/// <summary>
@@ -50,7 +51,7 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Sms
 				string? ResourceId, CommunicationsStatus Status, object? ChannelCommunication, IContentModel? ContentModel, Exception? Exception)
 			: base(EventName, ChannelId, ChannelProviderId, PipelineIntent, PipelineId, ResourceId, Status, ChannelCommunication, ContentModel, Exception)
 		{
-			_extended = new ExtendedSmsDeliveryReportProperties(this);
+			_extended = this.Twilio().Sms;
 		}
 
 		/// <summary>

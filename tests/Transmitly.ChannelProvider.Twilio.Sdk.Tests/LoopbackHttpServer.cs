@@ -100,7 +100,7 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Tests
 						int end;
 						while ((end = pending.IndexOf("\r\n\r\n", StringComparison.Ordinal)) >= 0)
 						{
-							pending = pending.Substring(end + 4);
+							pending = pending[(end + 4)..];
 							Interlocked.Increment(ref _requestCount);
 							await stream.WriteAsync(OkResponse, 0, OkResponse.Length).ConfigureAwait(false);
 						}

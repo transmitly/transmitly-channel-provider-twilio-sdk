@@ -18,35 +18,42 @@ using System.Threading.Tasks;
 using Transmitly.ChannelProvider.Twilio.Configuration;
 using Transmitly.ChannelProvider.Twilio.Configuration.Sms;
 using Transmitly.Delivery;
+using Transmitly.Util;
 
 namespace Transmitly.ChannelProvider.Twilio.Sdk.Sms
 {
 	/// <summary>
 	/// Adapts incoming Twilio SMS status callbacks into Transmitly delivery reports.
 	/// </summary>
-	public sealed class TwilioSmsDeliveryStatusReportAdaptor : IChannelProviderDeliveryReportRequestAdaptor
+	/// <param name="twilioClientOptions">Twilio options.</param>
+	public sealed class TwilioSmsDeliveryStatusReportAdaptor(TwilioClientOptions twilioClientOptions) : IChannelProviderDeliveryReportRequestAdaptor
 	{
-		//https://www.twilio.com/docs/usage/webhooks/webhooks-security
+		private readonly TwilioClientOptions _twilioClientOptions = Guard.AgainstNull(twilioClientOptions);
+
 		/// <summary>
 		/// Converts a Twilio webhook callback into one or more delivery reports.
 		/// </summary>
 		/// <param name="adaptorContext">Incoming request adaptor context.</param>
 		/// <returns>The adapted delivery reports, or <see langword="null"/> when the request does not match this adaptor.</returns>
+		/// <exception cref="DeliveryReportRequestValidationException">The request is a Twilio SMS callback but its signature is invalid.</exception>
 		public Task<IReadOnlyCollection<DeliveryReport>?> AdaptAsync(IRequestAdaptorContext adaptorContext)
 		{
 			if (!ShouldAdapt(adaptorContext))
 				return Task.FromResult<IReadOnlyCollection<DeliveryReport>?>(null);
 
+			DeliveryReportSignature.Validate(adaptorContext, _twilioClientOptions);
+
 			var smsReport = new SmsStatusReport(adaptorContext);
 
+			// MessageSid/MessageStatus are on every callback; SmsSid/SmsStatus are older duplicates that may be missing.
 			var ret = new SmsDeliveryReport(
 					DeliveryReport.Event.StatusChanged(),
 					Id.Channel.Sms(),
 					TwilioConstant.Id,
 					adaptorContext.PipelineIntent,
 					adaptorContext.PipelineId,
-					smsReport.SmsSid,
-					ConvertStatus(smsReport.SmsStatus),
+					smsReport.MessageSid ?? smsReport.SmsSid,
+					ConvertStatus(smsReport.MessageStatus ?? smsReport.SmsStatus),
 					null,
 					null,
 					null
@@ -74,15 +81,15 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Sms
 				SmsStatus.Canceled =>
 					CommunicationsStatus.ClientError(TwilioConstant.Id, Enum.GetName(typeof(SmsStatus), messageStatus) ?? "Canceled", (int)messageStatus),
 
-				_ => CommunicationsStatus.ClientError(TwilioConstant.Id, "Unknown", CommunicationsStatus.ClientErrMax)
+				_ => CommunicationsStatus.ClientError(TwilioConstant.Id, "Unknown")
 			};
 		}
 
 		private static bool ShouldAdapt(IRequestAdaptorContext adaptorContext)
 		{
 			return
-				(adaptorContext.GetValue(DeliveryUtil.ChannelIdKey)?.Equals(Id.Channel.Sms(), StringComparison.InvariantCultureIgnoreCase) ?? false) &&
-				(adaptorContext.GetValue(DeliveryUtil.ChannelProviderIdKey)?.StartsWith(TwilioConstant.Id, StringComparison.InvariantCultureIgnoreCase) ?? false);
+				(adaptorContext.GetQueryValue(DeliveryUtil.ChannelIdKey)?.Equals(Id.Channel.Sms(), StringComparison.InvariantCultureIgnoreCase) ?? false) &&
+				(adaptorContext.GetQueryValue(DeliveryUtil.ChannelProviderIdKey)?.StartsWith(TwilioConstant.Id, StringComparison.InvariantCultureIgnoreCase) ?? false);
 		}
 	}
 }

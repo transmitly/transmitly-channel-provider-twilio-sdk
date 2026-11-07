@@ -21,6 +21,7 @@ using Twilio.Rest.Api.V2010.Account;
 using TWML = Twilio.TwiML;
 using TWT = Twilio.Types;
 using TWH = Twilio.Http;
+using Transmitly.ChannelProvider.Twilio.Configuration.Voice;
 using Transmitly.Delivery;
 using Transmitly.Util;
 using Transmitly.ChannelProvider.Twilio.Configuration;
@@ -46,7 +47,7 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 		/// <returns>Result of the dispatch.</returns>
 		protected override async Task<IReadOnlyCollection<IDispatchResult?>> DispatchAsync(System.Net.Http.HttpClient restClient, IVoice voice, IDispatchCommunicationContext communicationContext, CancellationToken cancellationToken)
 		{
-			var voiceProperties = new ExtendedVoiceChannelProperties(voice.ExtendedProperties);
+			var voiceProperties = voice.Twilio();
 			var recipients = communicationContext.PlatformIdentities.SelectMany(a => a.Addresses.Select(addr => new TWT.PhoneNumber(addr.Value))).ToList();
 			var results = new List<IDispatchResult>(recipients.Count);
 			var from = new TWT.PhoneNumber(Guard.AgainstNull(voice.From).Value);
@@ -81,7 +82,7 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 			return results;
 		}
 
-		private static async Task<(string? twiml, Uri? url)> GetMessageContent(ExtendedVoiceChannelProperties voiceProperties, IDispatchCommunicationContext communicationContext, IVoice voice, CancellationToken cancellationToken)
+		private static async Task<(string? twiml, Uri? url)> GetMessageContent(IExtendedVoiceChannelProperties voiceProperties, IDispatchCommunicationContext communicationContext, IVoice voice, CancellationToken cancellationToken)
 		{
 			var messageNeededId = Guid.NewGuid().ToString("N");
 			var url = await GetTwiMLCallbackUrl(messageNeededId, voiceProperties, communicationContext).ConfigureAwait(false);
@@ -124,16 +125,18 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 			};
 		}
 
-		private static string? ConvertMachineDetection(MachineDetection channelValue, MachineDetection? configuredValue)
+		// Twilio takes "Enable" or "DetectMessageEnd"; leaving the parameter out turns detection off.
+		internal static string? ConvertMachineDetection(MachineDetection channelValue, MachineDetection? configuredValue)
 		{
-#if NET6_0_OR_GREATER
-			return Enum.GetName(configuredValue ?? channelValue);
-#else
-			return Enum.GetName(typeof(MachineDetection), configuredValue ?? channelValue);
-			#endif
+			return (configuredValue ?? channelValue) switch
+			{
+				MachineDetection.Enabled => "Enable",
+				MachineDetection.MessageEnd => "DetectMessageEnd",
+				_ => null
+			};
 		}
 
-		private static async Task<Uri?> GetTwiMLCallbackUrl(string messageNeededId, ExtendedVoiceChannelProperties voiceProperties, IDispatchCommunicationContext context)
+		private static async Task<Uri?> GetTwiMLCallbackUrl(string messageNeededId, IExtendedVoiceChannelProperties voiceProperties, IDispatchCommunicationContext context)
 		{
 			//const string RequiredUrlExceptionMessage = $"Twilio requires a url that returns TwiML when called. Ensure you have a value set for the Twilio extended property: '{nameof(voiceProperties.Url)}' OR '{nameof(voiceProperties.UrlResolver)}'.";
 
@@ -152,7 +155,7 @@ namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 			return new Uri(url).AddParameter("messageId", messageNeededId).AddPipelineContext(string.Empty, context.PipelineIntent, context.PipelineId, context.ChannelId, context.ChannelProviderId);
 		}
 
-		private static async Task<Uri?> GetStatusCallbackUrl(ExtendedVoiceChannelProperties voiceProperties, IVoice voice, IDispatchCommunicationContext context)
+		private static async Task<Uri?> GetStatusCallbackUrl(IExtendedVoiceChannelProperties voiceProperties, IVoice voice, IDispatchCommunicationContext context)
 		{
 			string? url;
 			var urlResolver = voiceProperties.StatusCallbackUrlResolver ?? voice.DeliveryReportCallbackUrlResolver;
